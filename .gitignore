@@ -1,0 +1,9 @@
+# build outputs
+fastswap.dylib
+wrapper
+
+# local reverse-engineering setup: Ghidra, JDK, projects, and anything derived
+# from the game binary (a copy of it and decompiled output) -- never commit these
+tools/*
+!tools/decomp.sh
+!tools/scripts/
