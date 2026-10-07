@@ -7,3 +7,4 @@ wrapper
 tools/*
 !tools/decomp.sh
 !tools/scripts/
+__pycache__/

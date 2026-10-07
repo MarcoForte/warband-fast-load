@@ -67,7 +67,7 @@ logs the end of loading. After that the hooks pass calls straight through.
 
 Each part can be switched off with an environment variable, which helps narrow down a
 problem: `FASTSWAP_NOTEX`, `FASTSWAP_NOBATCH`, `FASTSWAP_NOOVERLAP`, `FASTSWAP_NOFOPEN`,
-`FASTSWAP_NOSHADER`, `FASTSWAP_NOPREFETCH`, `FASTSWAP_NODIR`.
+`FASTSWAP_NOSHADER`, `FASTSWAP_NOPREFETCH`, `FASTSWAP_NODIR`, `FASTSWAP_NOTAKEOVER`.
 `FASTSWAP_TRACE=/path/to/file` writes a timeline of the load.
 
 ## Caveats
@@ -77,6 +77,27 @@ problem: `FASTSWAP_NOTEX`, `FASTSWAP_NOBATCH`, `FASTSWAP_NOOVERLAP`, `FASTSWAP_N
   show up as a rendering glitch rather than an error message.
 - Tested with Floris Expanded 2.54 and checked in the main menu and a custom battle. Other
   modules should work (the hooks are in the engine, not the module) but are untested.
+
+## Mod: companion takeover
+
+When you fall in battle, you immediately continue as the nearest living companion (a hero
+from your party), with no loading or cutscene. If that companion falls too, you move on to the
+next one. Tab still offers to leave the battle.
+
+```sh
+./install.sh   # the dylib part (src/takeover.c)
+python3 mods/companion_takeover/install_mod.py \
+  "$HOME/Library/Application Support/Steam/steamapps/common/MountBlade Warband/Modules/Floris Expanded Mod Pack 2.54"
+```
+
+`--uninstall` restores the module's original `mission_templates.txt` and
+`quick_strings.txt`, which the first run saves as `*.takeover-orig`. `--test` also lets you
+take over plain soldiers (custom battles have no companions) and makes F9 knock you out.
+
+How it works: the mod adds two battle triggers that find the nearest companion and call the
+script operation `player_control_agent`. The engine only allows that operation in
+multiplayer, so `src/takeover.c` hooks its argument check and, in single player, switches the
+player agent itself. This mirrors what the engine does for the local multiplayer player.
 
 ## Reverse engineering helpers
 
